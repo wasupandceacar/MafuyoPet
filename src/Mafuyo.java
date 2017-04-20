@@ -2,6 +2,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -36,6 +38,7 @@ public class Mafuyo extends JFrame{
     public Mafuyo() {
         String path="src/imgs/mafuyo.png";
         this.setSize(getWidth(path), getHeight(path));
+        this.setLocation(1000,500);
         this.setUndecorated(true);
         this.setBackground(new Color(0, 0, 0, 0));
         MouseEventListener mouseListener = new MouseEventListener(this);
@@ -58,14 +61,30 @@ public class Mafuyo extends JFrame{
         Point origin;
         //鼠标拖拽想要移动的目标组件
         Mafuyo frame;
+        PopupMenu Menu;
+        MenuItem exit;
 
         public MouseEventListener(Mafuyo frame) {
             this.frame = frame;
             origin = new Point();
+            Menu=new PopupMenu();
+            exit=new MenuItem("退出");
+            Menu.add(exit);
+            exit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+                }
+            });
+            this.frame.add(Menu);
         }
 
         @Override
-        public void mouseClicked(MouseEvent e) {}
+        public void mouseClicked(MouseEvent e) {
+            if(e.getButton()==MouseEvent.BUTTON3){
+                Menu.show(frame,e.getX(),e.getY());
+            }
+        }
 
         /**
          * 记录鼠标按下时的点
@@ -74,17 +93,19 @@ public class Mafuyo extends JFrame{
         public void mousePressed(MouseEvent e) {
             origin.x = e.getX();
             origin.y = e.getY();
+            this.frame.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
         }
 
         @Override
-        public void mouseReleased(MouseEvent e) {}
+        public void mouseReleased(MouseEvent e) {
+            this.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        }
 
         /**
          * 鼠标移进标题栏时，设置鼠标图标为移动图标
          */
         @Override
         public void mouseEntered(MouseEvent e) {
-            this.frame.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
         }
 
         /**
@@ -92,7 +113,6 @@ public class Mafuyo extends JFrame{
          */
         @Override
         public void mouseExited(MouseEvent e) {
-            this.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
 
         /**
