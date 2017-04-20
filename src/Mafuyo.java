@@ -13,6 +13,8 @@ import java.io.IOException;
 
 public class Mafuyo extends JFrame{
 
+    String imagepath;
+
     public int getWidth(String path){
         File picture = new File(path);
         BufferedImage sourceImg = null;
@@ -44,7 +46,24 @@ public class Mafuyo extends JFrame{
         MouseEventListener mouseListener = new MouseEventListener(this);
         this.addMouseListener(mouseListener);
         this.addMouseMotionListener(mouseListener);
+        imagepath="src/imgs/mafuyo.png";
         this.setVisible(true);
+        while(true){
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            imagepath="src/imgs/mafuyo2.png";
+            this.repaint();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            imagepath="src/imgs/mafuyo.png";
+            this.repaint();
+        }
     }
 
     @Override
@@ -52,8 +71,10 @@ public class Mafuyo extends JFrame{
         super.paint(g);
         Graphics2D g2 = (Graphics2D)g; //强转成2D
         String path="src/imgs/mafuyo.png";
-        ImageIcon ii1 = new ImageIcon(path);
-        g2.drawImage(ii1.getImage(), 0, 0, getWidth(path),getHeight(path),null);
+        int width=getWidth(path);
+        int height=getHeight(path);
+        ImageIcon ii1 = new ImageIcon(imagepath);
+        g2.drawImage(ii1.getImage(), 0, 0, width, height,null);
     }
 
     class MouseEventListener implements MouseInputListener {
@@ -73,7 +94,7 @@ public class Mafuyo extends JFrame{
             exit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    frame.dispose();
+                    System.exit(0);
                 }
             });
             this.frame.add(Menu);
