@@ -42,14 +42,23 @@ public class Mdialog extends JDialog{
         this.setUndecorated(true);
         this.setLayout(null);
         JButton mail=new JButton("查看邮箱");
-        mail.setBounds(20,46,60,20);
+        mail.setBounds(20,46,56,20);
         mail.setBorder(null);
         mail.setBackground(Color.white);
         mail.setFocusPainted(false);
         mail.setFont(this.getFont());
-        this.setBackground(new Color(0, 0, 0, 0));
+        JButton mailconf=new JButton("登陆邮箱");
+        mailconf.setBounds(82,46,56,20);
+        mailconf.setBorder(null);
+        mailconf.setBackground(Color.white);
+        mailconf.setFocusPainted(false);
+        mailconf.setFont(this.getFont());
         this.add(mail);
+        this.add(mailconf);
+        this.setBackground(new Color(0, 0, 0, 0));
         this.setVisible(true);
+        mail.repaint();
+        mailconf.repaint();
     }
 
     @Override
