@@ -151,7 +151,7 @@ public class Mafuyo extends JFrame{
             if(e.getButton()==MouseEvent.BUTTON1){
                 if(MafuyoNoHanashi==null){
                     Point p = this.frame.getLocation();
-                    MafuyoNoHanashi=new Mdialog(p.x+145,p.y-90,"前辈，怎么了？");
+                    MafuyoNoHanashi=new Mdialog(p.x+145,p.y-90,"前辈，怎么了？", frame);
                     MafuyoNoHanashi.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {

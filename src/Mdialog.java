@@ -34,7 +34,7 @@ public class Mdialog extends JDialog{
         return sourceImg.getHeight();
     }
 
-    public Mdialog(int x, int y, String hanashi){
+    public Mdialog(int x, int y, String hanashi, Mafuyo main){
         this.hanashi=hanashi;
         imagepath="src/imgs/dialog1.png";
         this.setSize(getWidth(imagepath), getHeight(imagepath));
