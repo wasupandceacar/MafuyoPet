@@ -1,23 +1,30 @@
-import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Mafuyo extends JFrame{
 
     String imagepath;
+
+    Mdialog MafuyoNoHanashi;
+
+    //不关注对话的计时器
+    Timer dtimer;
+
+    //等待事件
+    public void waitms(int ms){
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     public int getWidth(String path){
         File picture = new File(path);
@@ -42,37 +49,29 @@ public class Mafuyo extends JFrame{
     }
 
     public Mafuyo() {
-        String path="src/imgs/mafuyo.png";
-        this.setSize(getWidth(path), getHeight(path));
+        imagepath="src/imgs/mafuyo.png";
+        this.setSize(getWidth(imagepath), getHeight(imagepath));
         this.setLocation(1000,500);
         this.setUndecorated(true);
         this.setBackground(new Color(0, 0, 0, 0));
         MouseEventListener mouseListener = new MouseEventListener(this);
         this.addMouseListener(mouseListener);
         this.addMouseMotionListener(mouseListener);
-        imagepath="src/imgs/mafuyo.png";
         this.setType(Type.UTILITY);
         tray();
-        //this.setAlwaysOnTop(true);
+        this.setAlwaysOnTop(true);
         this.setVisible(true);
         while(true){
-            try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            waitms(4000);
             imagepath="src/imgs/mafuyo2.png";
             this.repaint();
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            waitms(300);
             imagepath="src/imgs/mafuyo.png";
             this.repaint();
         }
     }
 
+    //设置托盘程序
     public void tray(){
         Mafuyo frame=this;
         SystemTray tray = SystemTray.getSystemTray();
@@ -94,7 +93,7 @@ public class Mafuyo extends JFrame{
         {
             public void mouseClicked(MouseEvent e)
             {
-                if(e.getClickCount()== 2)//鼠标双击图标
+                if(e.getClickCount()== 1)//鼠标双击图标
                 {
                     frame.setExtendedState(JFrame.NORMAL);//设置状态为正常
                     frame.setVisible(true);//显示主窗体
@@ -114,12 +113,11 @@ public class Mafuyo extends JFrame{
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        Graphics2D g2 = (Graphics2D)g; //强转成2D
         String path="src/imgs/mafuyo.png";
         int width=getWidth(path);
         int height=getHeight(path);
         ImageIcon ii1 = new ImageIcon(imagepath);
-        g2.drawImage(ii1.getImage(), 0, 0, width, height,null);
+        g.drawImage(ii1.getImage(), 0, 0, width, height,null);
     }
 
     class MouseEventListener implements MouseInputListener {
@@ -150,6 +148,69 @@ public class Mafuyo extends JFrame{
             if(e.getButton()==MouseEvent.BUTTON3){
                 Menu.show(frame,e.getX(),e.getY());
             }
+            if(e.getButton()==MouseEvent.BUTTON1){
+                if(MafuyoNoHanashi==null){
+                    Point p = this.frame.getLocation();
+                    MafuyoNoHanashi=new Mdialog(p.x+145,p.y-90,"前辈，怎么了？");
+                    MafuyoNoHanashi.addMouseListener(new MouseListener() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseReleased(MouseEvent e) {
+
+                        }
+
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            if(dtimer!=null){
+                                dtimer.stop();
+                                dtimer=null;
+                            }
+                        }
+
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            if(dtimer==null){
+                                dtimer=new Timer(6000, new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        if(MafuyoNoHanashi!=null){
+                                            MafuyoNoHanashi.dispose();
+                                            MafuyoNoHanashi=null;
+                                        }
+                                    }
+                                });
+                                dtimer.start();
+                            }
+                        }
+                    });
+                    MafuyoNoHanashi.setAlwaysOnTop(true);
+                }
+                if(dtimer!=null){
+                    dtimer.stop();
+                    dtimer=null;
+                }
+                if(dtimer==null){
+                    dtimer=new Timer(6000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if(MafuyoNoHanashi!=null){
+                                MafuyoNoHanashi.dispose();
+                                MafuyoNoHanashi=null;
+                            }
+                        }
+                    });
+                    dtimer.start();
+                }
+            }
         }
 
         /**
@@ -167,30 +228,25 @@ public class Mafuyo extends JFrame{
             this.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         }
 
-        /**
-         * 鼠标移进标题栏时，设置鼠标图标为移动图标
-         */
         @Override
         public void mouseEntered(MouseEvent e) {
         }
 
-        /**
-         * 鼠标移出标题栏时，设置鼠标图标为默认指针
-         */
         @Override
         public void mouseExited(MouseEvent e) {
         }
 
-        /**
-         * 鼠标在标题栏拖拽时，设置窗口的坐标位置
-         * 窗口新的坐标位置 = 移动前坐标位置+（鼠标指针当前坐标-鼠标按下时指针的位置）
-         */
         @Override
         public void mouseDragged(MouseEvent e) {
             Point p = this.frame.getLocation();
             this.frame.setLocation(
                     p.x + (e.getX() - origin.x),
                     p.y + (e.getY() - origin.y));
+            if(MafuyoNoHanashi!=null){
+                MafuyoNoHanashi.setLocation(
+                        p.x + (e.getX() - origin.x) + 145,
+                        p.y + (e.getY() - origin.y) -90);
+            }
         }
 
         @Override
@@ -199,6 +255,6 @@ public class Mafuyo extends JFrame{
     }
 
     public static void main(String[] args) {
-        Mafuyo mafuyo=new Mafuyo();
+        new Mafuyo();
     }
 }
