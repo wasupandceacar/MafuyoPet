@@ -1,9 +1,13 @@
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.SubstanceOfficeBlue2007LookAndFeel;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -47,6 +51,9 @@ public class Mafuyo extends JFrame{
         this.addMouseListener(mouseListener);
         this.addMouseMotionListener(mouseListener);
         imagepath="src/imgs/mafuyo.png";
+        this.setType(Type.UTILITY);
+        tray();
+        //this.setAlwaysOnTop(true);
         this.setVisible(true);
         while(true){
             try {
@@ -63,6 +70,44 @@ public class Mafuyo extends JFrame{
             }
             imagepath="src/imgs/mafuyo.png";
             this.repaint();
+        }
+    }
+
+    public void tray(){
+        Mafuyo frame=this;
+        SystemTray tray = SystemTray.getSystemTray();
+        ImageIcon icon = new ImageIcon("src/imgs/icon.png");
+
+        PopupMenu pop = new PopupMenu(); // 构造一个右键弹出式菜单
+        final MenuItem exit = new MenuItem("退出");
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        pop.add(exit);
+        TrayIcon trayIcon = new TrayIcon(icon.getImage(),"真冬", pop);//实例化托盘图标
+        trayIcon.setImageAutoSize(true);
+        //为托盘图标监听点击事件
+        trayIcon.addMouseListener(new MouseAdapter()
+        {
+            public void mouseClicked(MouseEvent e)
+            {
+                if(e.getClickCount()== 2)//鼠标双击图标
+                {
+                    frame.setExtendedState(JFrame.NORMAL);//设置状态为正常
+                    frame.setVisible(true);//显示主窗体
+                }
+            }
+        });
+        try
+        {
+            tray.add(trayIcon); // 将托盘图标添加到系统的托盘实例中
+        }
+        catch(AWTException ex)
+        {
+            ex.printStackTrace();
         }
     }
 
@@ -154,6 +199,6 @@ public class Mafuyo extends JFrame{
     }
 
     public static void main(String[] args) {
-        new Mafuyo();
+        Mafuyo mafuyo=new Mafuyo();
     }
 }
