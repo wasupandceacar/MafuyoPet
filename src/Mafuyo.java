@@ -1,3 +1,5 @@
+import crawlers.Moodle;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -7,15 +9,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.TimerTask;
 
 public class Mafuyo extends JFrame{
 
     String imagepath;
 
-    Mdialog MafuyoNoHanashi;
+    Maindialog MafuyoNoHanashi;
+
+    Simpledialog Mafuyowait;
 
     //不关注对话的计时器
     Timer dtimer;
+
+    //等待的计时器
+    Timer wtimer;
 
     //等待事件
     public void waitms(int ms){
@@ -151,7 +159,7 @@ public class Mafuyo extends JFrame{
             if(e.getButton()==MouseEvent.BUTTON1){
                 if(MafuyoNoHanashi==null){
                     Point p = this.frame.getLocation();
-                    MafuyoNoHanashi=new Mdialog(p.x+145,p.y-90,"前辈，怎么了？", frame);
+                    MafuyoNoHanashi=new Maindialog(p.x+145,p.y-90,"前辈，怎么了？", frame);
                     MafuyoNoHanashi.addMouseListener(new MouseListener() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -247,11 +255,59 @@ public class Mafuyo extends JFrame{
                         p.x + (e.getX() - origin.x) + 145,
                         p.y + (e.getY() - origin.y) -90);
             }
+            if(Mafuyowait!=null){
+                Mafuyowait.setLocation(
+                        p.x + (e.getX() - origin.x) + 145,
+                        p.y + (e.getY() - origin.y) -90);
+            }
         }
 
         @Override
         public void mouseMoved(MouseEvent e) {}
 
+    }
+
+    class MoodleThread extends Thread {
+        @Override
+        public void run() {
+            new Moodle();
+        }
+    }
+
+    //打开网页
+    public void OpenBrowser(String path){
+        if(MafuyoNoHanashi!=null){
+            MafuyoNoHanashi.dispose();
+        }
+        Point p = this.getLocation();
+        if(Mafuyowait==null){
+            Mafuyowait=new Simpledialog(p.x+145,p.y-90,"请稍等哦。");
+        }
+        if(wtimer!=null){
+            wtimer.stop();
+            wtimer=null;
+        }
+        MoodleThread mt=new MoodleThread();
+        mt.start();
+        if(wtimer==null){
+            wtimer=new Timer(500, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(mt.getState()== Thread.State.TERMINATED){
+                        try {
+                            Desktop.getDesktop().open(new File(path));
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        wtimer.stop();
+                        wtimer=null;
+                        Mafuyowait.dispose();
+                        Mafuyowait=null;
+                    }
+                }
+            });
+            wtimer.start();
+        }
     }
 
     public static void main(String[] args) {

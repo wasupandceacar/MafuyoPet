@@ -1,12 +1,16 @@
+import crawlers.Moodle;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class Mdialog extends JDialog{
+public class Maindialog extends JDialog{
 
     String imagepath;
 
@@ -34,31 +38,31 @@ public class Mdialog extends JDialog{
         return sourceImg.getHeight();
     }
 
-    public Mdialog(int x, int y, String hanashi, Mafuyo main){
+    public Maindialog(int x, int y, String hanashi, Mafuyo frame){
         this.hanashi=hanashi;
         imagepath="src/imgs/dialog1.png";
         this.setSize(getWidth(imagepath), getHeight(imagepath));
         this.setLocation(x, y);
         this.setUndecorated(true);
         this.setLayout(null);
-        JButton mail=new JButton("查看邮箱");
-        mail.setBounds(20,46,56,20);
-        mail.setBorder(null);
-        mail.setBackground(Color.white);
-        mail.setFocusPainted(false);
-        mail.setFont(this.getFont());
-        JButton mailconf=new JButton("登陆邮箱");
-        mailconf.setBounds(82,46,56,20);
-        mailconf.setBorder(null);
-        mailconf.setBackground(Color.white);
-        mailconf.setFocusPainted(false);
-        mailconf.setFont(this.getFont());
-        this.add(mail);
-        this.add(mailconf);
+        int length=hanashi.length();
+        int row=(length-1)/11;
+        JButton moodle=new JButton("查看moodle");
+        moodle.setBounds(20,46+15*row,66,20);
+        moodle.setBorder(null);
+        moodle.setBackground(Color.white);
+        moodle.setFocusPainted(false);
+        moodle.setFont(this.getFont());
+        moodle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.OpenBrowser("src/html/moodle.html");
+            }
+        });
+        this.add(moodle);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setVisible(true);
-        mail.repaint();
-        mailconf.repaint();
+        moodle.repaint();
     }
 
     @Override
