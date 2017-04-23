@@ -1,5 +1,3 @@
-import crawlers.Moodle;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -48,7 +46,7 @@ public class Maindialog extends JDialog{
         int length=hanashi.length();
         int row=(length-1)/11;
         JButton moodle=new JButton("查看moodle");
-        moodle.setBounds(20,46+15*row,66,20);
+        moodle.setBounds(24,46+15*row,66,20);
         moodle.setBorder(null);
         moodle.setBackground(Color.white);
         moodle.setFocusPainted(false);
@@ -56,7 +54,7 @@ public class Maindialog extends JDialog{
         moodle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.OpenBrowser("src/html/moodle.html");
+                frame.OpenMoodle();
             }
         });
         this.add(moodle);

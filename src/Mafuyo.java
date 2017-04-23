@@ -6,10 +6,9 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.TimerTask;
+import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Mafuyo extends JFrame{
 
@@ -18,6 +17,8 @@ public class Mafuyo extends JFrame{
     Maindialog MafuyoNoHanashi;
 
     Simpledialog Mafuyowait;
+
+    Moodledialog MafuyoMoodle;
 
     //不关注对话的计时器
     Timer dtimer;
@@ -260,6 +261,11 @@ public class Mafuyo extends JFrame{
                         p.x + (e.getX() - origin.x) + 145,
                         p.y + (e.getY() - origin.y) -90);
             }
+            if(MafuyoMoodle!=null){
+                MafuyoMoodle.setLocation(
+                        p.x + (e.getX() - origin.x) + 140,
+                        p.y + (e.getY() - origin.y) -190);
+            }
         }
 
         @Override
@@ -267,6 +273,7 @@ public class Mafuyo extends JFrame{
 
     }
 
+    //抓取moodle的线程
     class MoodleThread extends Thread {
         @Override
         public void run() {
@@ -274,14 +281,50 @@ public class Mafuyo extends JFrame{
         }
     }
 
-    //打开网页
+    //过滤moodle的新消息
+    public String getMoodleNews(){
+        String result="";
+        String html=readFile("src/html/moodle.html");
+        //匹配作业
+        result+="需要留意的作业有   ";
+        String shtml=html.substring(html.indexOf("course_list"),html.indexOf("id=\"sb-2\""));
+        Pattern homeworkPattern=Pattern.compile(".*>(.*?)</a></h.*?留意");
+        Matcher homeworkMatcher=homeworkPattern.matcher(shtml);
+        while(homeworkMatcher.find()) {
+            String tmp=homeworkMatcher.group(1);
+            result+=tmp;
+            int num=11-tmp.length()%11;
+            for(int i=0;i<num;i++){
+                result+=" ";
+            }
+        }
+        return result;
+    }
+
     public void OpenBrowser(String path){
+        try {
+            Desktop.getDesktop().open(new File(path));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        if(MafuyoMoodle!=null){
+            MafuyoMoodle.dispose();
+            MafuyoMoodle=null;
+        }
+    }
+
+    //打开网页
+    public void OpenMoodle(){
         if(MafuyoNoHanashi!=null){
             MafuyoNoHanashi.dispose();
         }
+        Mafuyo frame=this;
         Point p = this.getLocation();
+        imagepath="src/imgs/mafuyo1.png";
+        this.repaint();
         if(Mafuyowait==null){
             Mafuyowait=new Simpledialog(p.x+145,p.y-90,"请稍等哦。");
+            Mafuyowait.setAlwaysOnTop(true);
         }
         if(wtimer!=null){
             wtimer.stop();
@@ -294,19 +337,41 @@ public class Mafuyo extends JFrame{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(mt.getState()== Thread.State.TERMINATED){
-                        try {
-                            Desktop.getDesktop().open(new File(path));
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
                         wtimer.stop();
                         wtimer=null;
                         Mafuyowait.dispose();
                         Mafuyowait=null;
+                        if(MafuyoMoodle==null){
+                            MafuyoMoodle=new Moodledialog(p.x+140,p.y-190, getMoodleNews(), frame);
+                            MafuyoMoodle.setAlwaysOnTop(true);
+                            imagepath="src/imgs/mafuyo.png";
+                            frame.repaint();
+                        }
                     }
                 }
             });
             wtimer.start();
+        }
+    }
+
+    //读取文件
+    public String readFile(String path){
+        File src=new File(path);
+        try {
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(src), "UTF-8");
+            BufferedReader bufferedReader = new BufferedReader(isr);
+            StringBuilder stringBuilder = new StringBuilder();
+            String content;
+            while((content = bufferedReader.readLine() )!=null){
+                stringBuilder.append(content);
+            }
+            return stringBuilder.toString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
