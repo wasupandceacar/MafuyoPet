@@ -58,9 +58,23 @@ public class Maindialog extends JDialog{
             }
         });
         this.add(moodle);
+        JButton wlan=new JButton("连接校园网");
+        wlan.setBounds(94,46+15*row,66,20);
+        wlan.setBorder(null);
+        wlan.setBackground(Color.white);
+        wlan.setFocusPainted(false);
+        wlan.setFont(this.getFont());
+        wlan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.AutoLoginToWlan();
+            }
+        });
+        this.add(wlan);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setVisible(true);
         moodle.repaint();
+        wlan.repaint();
     }
 
     @Override

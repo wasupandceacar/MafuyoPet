@@ -23,7 +23,7 @@ public class Moodle {
         Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
         //读取账户和密码
         IniFile ini=new BasicIniFile();
-        IniFileReader inir=new IniFileReader(ini, new File("src/inis/moodlelogin.ini"));
+        IniFileReader inir=new IniFileReader(ini, new File("src/inis/moodle.ini"));
         try {
             inir.read();
             IniSection iniSection=ini.getSection(0);

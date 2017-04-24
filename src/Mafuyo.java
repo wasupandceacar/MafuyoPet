@@ -1,4 +1,5 @@
 import crawlers.Moodle;
+import crawlers.Wlan;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -281,6 +282,13 @@ public class Mafuyo extends JFrame{
         }
     }
 
+    class WlanThread extends Thread {
+        @Override
+        public void run() {
+            new Wlan();
+        }
+    }
+
     //过滤moodle的新消息
     public String getMoodleNews(){
         String result="";
@@ -288,15 +296,21 @@ public class Mafuyo extends JFrame{
         //匹配作业
         result+="需要留意的作业有   ";
         String shtml=html.substring(html.indexOf("course_list"),html.indexOf("id=\"sb-2\""));
-        Pattern homeworkPattern=Pattern.compile(".*>(.*?)</a></h.*?留意");
-        Matcher homeworkMatcher=homeworkPattern.matcher(shtml);
-        while(homeworkMatcher.find()) {
-            String tmp=homeworkMatcher.group(1);
-            result+=tmp;
-            int num=11-tmp.length()%11;
-            for(int i=0;i<num;i++){
-                result+=" ";
+        while(shtml.contains("course_title")) {
+            int start=shtml.indexOf("course_title");
+            int end=shtml.indexOf("</div></div><div class=\"box flush\">");
+            String check=shtml.substring(start, end);
+            if(check.contains("您有需要留意的作业")){
+                int ssend=check.indexOf("</a></h2>");
+                String tmp=check.substring(start, ssend);
+                tmp=tmp.substring(tmp.lastIndexOf(">")+1, tmp.length());
+                result+=tmp;
+                int num=11-tmp.length()%11;
+                for(int i=0;i<num;i++){
+                    result+=" ";
+                }
             }
+            shtml=shtml.substring(end+36, shtml.length());
         }
         return result;
     }
@@ -347,6 +361,46 @@ public class Mafuyo extends JFrame{
                             imagepath="src/imgs/mafuyo.png";
                             frame.repaint();
                         }
+                    }
+                }
+            });
+            wtimer.start();
+        }
+    }
+
+    //自动连接校园网
+    public void AutoLoginToWlan(){
+        if(MafuyoNoHanashi!=null){
+            MafuyoNoHanashi.dispose();
+        }
+        Mafuyo frame=this;
+        Point p = this.getLocation();
+        imagepath="src/imgs/mafuyo1.png";
+        this.repaint();
+        if(Mafuyowait==null){
+            Mafuyowait=new Simpledialog(p.x+145,p.y-90,"请稍等哦。");
+            Mafuyowait.setAlwaysOnTop(true);
+        }
+        if(wtimer!=null){
+            wtimer.stop();
+            wtimer=null;
+        }
+        WlanThread wt=new WlanThread();
+        wt.start();
+        if(wtimer==null){
+            wtimer=new Timer(500, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(wt.getState()== Thread.State.TERMINATED){
+                        wtimer.stop();
+                        wtimer=null;
+                        Mafuyowait.dispose();
+                        Mafuyowait=null;
+                        Mafuyowait=new Simpledialog(p.x+145,p.y-90,"已经连接到校园网。  请尽情地使用吧。");
+                        Mafuyowait.setAlwaysOnTop(true);
+                        waitms(4000);
+                        Mafuyowait.dispose();
+                        Mafuyowait=null;
                     }
                 }
             });
