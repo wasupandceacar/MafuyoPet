@@ -38,7 +38,7 @@ public class Maindialog extends JDialog{
 
     public Maindialog(int x, int y, String hanashi, Mafuyo frame){
         this.hanashi=hanashi;
-        imagepath="src/imgs/dialog1.png";
+        imagepath="imgs/dialog1.png";
         this.setSize(getWidth(imagepath), getHeight(imagepath));
         this.setLocation(x, y);
         this.setUndecorated(true);

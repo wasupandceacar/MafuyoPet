@@ -36,7 +36,7 @@ public class Simpledialog extends JDialog {
 
     public Simpledialog(int x, int y, String hanashi){
         this.hanashi=hanashi;
-        imagepath="src/imgs/dialog1.png";
+        imagepath="imgs/dialog1.png";
         this.setSize(getWidth(imagepath), getHeight(imagepath));
         this.setLocation(x, y);
         this.setUndecorated(true);

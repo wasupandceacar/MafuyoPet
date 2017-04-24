@@ -22,7 +22,7 @@ public class Wlan {
         HttpClient client = new DefaultHttpClient();
         //读取账户和密码
         IniFile ini=new BasicIniFile();
-        IniFileReader inir=new IniFileReader(ini, new File("src/inis/wlan.ini"));
+        IniFileReader inir=new IniFileReader(ini, new File("inis/wlan.ini"));
         try {
             inir.read();
             IniSection iniSection=ini.getSection(1);
@@ -44,7 +44,7 @@ public class Wlan {
 
     public void connectToNet(){
         //读取wlan名
-        File src=new File("src/inis/wlan.ini");
+        File src=new File("inis/wlan.ini");
         try {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(src), "UTF-8");
             BufferedReader bufferedReader = new BufferedReader(isr);

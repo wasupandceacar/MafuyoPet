@@ -38,7 +38,7 @@ public class Moodledialog extends JDialog{
 
     public Moodledialog(int x, int y, String hanashi, Mafuyo frame){
         this.hanashi=hanashi;
-        imagepath="src/imgs/dialog2.png";
+        imagepath="imgs/dialog2.png";
         this.setSize(getWidth(imagepath), getHeight(imagepath));
         this.setLocation(x, y);
         this.setUndecorated(true);
@@ -54,7 +54,7 @@ public class Moodledialog extends JDialog{
         moodle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                frame.OpenBrowser("src/html/moodle.html");
+                frame.OpenBrowser("html/moodle.html");
             }
         });
         this.add(moodle);

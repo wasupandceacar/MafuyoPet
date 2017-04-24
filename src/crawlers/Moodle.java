@@ -23,7 +23,7 @@ public class Moodle {
         Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
         //读取账户和密码
         IniFile ini=new BasicIniFile();
-        IniFileReader inir=new IniFileReader(ini, new File("src/inis/moodle.ini"));
+        IniFileReader inir=new IniFileReader(ini, new File("inis/moodle.ini"));
         try {
             inir.read();
             IniSection iniSection=ini.getSection(0);
@@ -41,7 +41,7 @@ public class Moodle {
             HtmlElement button=(HtmlElement)LoginPage.getElementById("loginbtn");
             HtmlPage MoodlePage=button.click();
             try {
-                saveFile(MoodlePage,"src/html/moodle.html");
+                saveFile(MoodlePage,"html/moodle.html");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -55,9 +55,5 @@ public class Moodle {
         FileOutputStream output = new FileOutputStream(file);
         IOUtils.copy(is, output);
         output.close();
-    }
-
-    public static void main(String[] args) {
-        new Moodle();
     }
 }

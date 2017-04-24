@@ -8,8 +8,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Mafuyo extends JFrame{
 
@@ -59,7 +57,7 @@ public class Mafuyo extends JFrame{
     }
 
     public Mafuyo() {
-        imagepath="src/imgs/mafuyo.png";
+        imagepath="imgs/mafuyo.png";
         this.setSize(getWidth(imagepath), getHeight(imagepath));
         this.setLocation(1000,500);
         this.setUndecorated(true);
@@ -73,10 +71,10 @@ public class Mafuyo extends JFrame{
         this.setVisible(true);
         while(true){
             waitms(4000);
-            imagepath="src/imgs/mafuyo2.png";
+            imagepath="imgs/mafuyo2.png";
             this.repaint();
             waitms(300);
-            imagepath="src/imgs/mafuyo.png";
+            imagepath="imgs/mafuyo.png";
             this.repaint();
         }
     }
@@ -85,7 +83,7 @@ public class Mafuyo extends JFrame{
     public void tray(){
         Mafuyo frame=this;
         SystemTray tray = SystemTray.getSystemTray();
-        ImageIcon icon = new ImageIcon("src/imgs/icon.png");
+        ImageIcon icon = new ImageIcon("imgs/icon.png");
 
         PopupMenu pop = new PopupMenu(); // 构造一个右键弹出式菜单
         final MenuItem exit = new MenuItem("退出");
@@ -123,9 +121,8 @@ public class Mafuyo extends JFrame{
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        String path="src/imgs/mafuyo.png";
-        int width=getWidth(path);
-        int height=getHeight(path);
+        int width=getWidth(imagepath);
+        int height=getHeight(imagepath);
         ImageIcon ii1 = new ImageIcon(imagepath);
         g.drawImage(ii1.getImage(), 0, 0, width, height,null);
     }
@@ -223,9 +220,6 @@ public class Mafuyo extends JFrame{
             }
         }
 
-        /**
-         * 记录鼠标按下时的点
-         */
         @Override
         public void mousePressed(MouseEvent e) {
             origin.x = e.getX();
@@ -282,6 +276,7 @@ public class Mafuyo extends JFrame{
         }
     }
 
+    //连接网络线程
     class WlanThread extends Thread {
         @Override
         public void run() {
@@ -292,7 +287,7 @@ public class Mafuyo extends JFrame{
     //过滤moodle的新消息
     public String getMoodleNews(){
         String result="";
-        String html=readFile("src/html/moodle.html");
+        String html=readFile("html/moodle.html");
         //匹配作业
         result+="需要留意的作业有   ";
         String shtml=html.substring(html.indexOf("course_list"),html.indexOf("id=\"sb-2\""));
@@ -334,7 +329,7 @@ public class Mafuyo extends JFrame{
         }
         Mafuyo frame=this;
         Point p = this.getLocation();
-        imagepath="src/imgs/mafuyo1.png";
+        imagepath="imgs/mafuyo1.png";
         this.repaint();
         if(Mafuyowait==null){
             Mafuyowait=new Simpledialog(p.x+145,p.y-90,"请稍等哦。");
@@ -358,7 +353,7 @@ public class Mafuyo extends JFrame{
                         if(MafuyoMoodle==null){
                             MafuyoMoodle=new Moodledialog(p.x+140,p.y-190, getMoodleNews(), frame);
                             MafuyoMoodle.setAlwaysOnTop(true);
-                            imagepath="src/imgs/mafuyo.png";
+                            imagepath="imgs/mafuyo.png";
                             frame.repaint();
                         }
                     }
@@ -373,9 +368,8 @@ public class Mafuyo extends JFrame{
         if(MafuyoNoHanashi!=null){
             MafuyoNoHanashi.dispose();
         }
-        Mafuyo frame=this;
         Point p = this.getLocation();
-        imagepath="src/imgs/mafuyo1.png";
+        imagepath="imgs/mafuyo1.png";
         this.repaint();
         if(Mafuyowait==null){
             Mafuyowait=new Simpledialog(p.x+145,p.y-90,"请稍等哦。");
@@ -398,9 +392,16 @@ public class Mafuyo extends JFrame{
                         Mafuyowait=null;
                         Mafuyowait=new Simpledialog(p.x+145,p.y-90,"已经连接到校园网。  请尽情地使用吧。");
                         Mafuyowait.setAlwaysOnTop(true);
-                        waitms(4000);
-                        Mafuyowait.dispose();
-                        Mafuyowait=null;
+                        wtimer=new Timer(4000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                wtimer.stop();
+                                wtimer=null;
+                                Mafuyowait.dispose();
+                                Mafuyowait = null;
+                            }
+                        });
+                        wtimer.start();
                     }
                 }
             });
