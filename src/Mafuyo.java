@@ -286,11 +286,13 @@ public class Mafuyo extends JFrame{
 
     //过滤moodle的新消息
     public String getMoodleNews(){
-        String result="";
         String html=readFile("html/moodle.html");
         //匹配作业
-        result+="需要留意的作业有   ";
+        String homework="需要留意的作业有   ";
+        String topic="讨论区有新帖子    ";
         String shtml=html.substring(html.indexOf("course_list"),html.indexOf("id=\"sb-2\""));
+        boolean hflag=true;
+        boolean tflag=true;
         while(shtml.contains("course_title")) {
             int start=shtml.indexOf("course_title");
             int end=shtml.indexOf("</div></div><div class=\"box flush\">");
@@ -299,15 +301,33 @@ public class Mafuyo extends JFrame{
                 int ssend=check.indexOf("</a></h2>");
                 String tmp=check.substring(start, ssend);
                 tmp=tmp.substring(tmp.lastIndexOf(">")+1, tmp.length());
-                result+=tmp;
+                homework+=tmp;
                 int num=11-tmp.length()%11;
                 for(int i=0;i<num;i++){
-                    result+=" ";
+                    homework+=" ";
                 }
+                hflag=false;
+            }
+            if(check.contains("新讨论区帖子")){
+                int ssend=check.indexOf("</a></h2>");
+                String tmp=check.substring(start, ssend);
+                tmp=tmp.substring(tmp.lastIndexOf(">")+1, tmp.length());
+                topic+=tmp;
+                int num=11-tmp.length()%11;
+                for(int i=0;i<num;i++){
+                    topic+=" ";
+                }
+                tflag=false;
             }
             shtml=shtml.substring(end+36, shtml.length());
         }
-        return result;
+        if(hflag){
+            homework+="无          ";
+        }
+        if(tflag){
+            topic+="无          ";
+        }
+        return homework+"           "+topic;
     }
 
     public void OpenBrowser(String path){
