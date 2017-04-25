@@ -58,9 +58,23 @@ public class Moodledialog extends JDialog{
             }
         });
         this.add(moodle);
+        JButton close=new JButton("关闭");
+        close.setBounds(29,66+15*row,25,20);
+        close.setBorder(null);
+        close.setBackground(Color.white);
+        close.setFocusPainted(false);
+        close.setFont(this.getFont());
+        close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.CloseMoodle();
+            }
+        });
+        this.add(close);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setVisible(true);
         moodle.repaint();
+        close.repaint();
     }
 
     @Override

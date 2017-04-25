@@ -63,9 +63,9 @@ public class Mafuyo extends JFrame{
     }
 
     public Mafuyo() {
-        ImageIcon ii0 = new ImageIcon("imgs/mafuyo.png");
-        ImageIcon ii1 = new ImageIcon("imgs/mafuyo1.png");
-        ImageIcon ii2 = new ImageIcon("imgs/mafuyo2.png");
+        ii0 = new ImageIcon("imgs/mafuyo.png");
+        ii1 = new ImageIcon("imgs/mafuyo1.png");
+        ii2 = new ImageIcon("imgs/mafuyo2.png");
         ii=ii0;
         width=getWidth("imgs/mafuyo.png");
         height=getHeight("imgs/mafuyo.png");
@@ -434,6 +434,13 @@ public class Mafuyo extends JFrame{
                 }
             });
             wtimer.start();
+        }
+    }
+
+    public void CloseMoodle(){
+        if(MafuyoMoodle!=null){
+            MafuyoMoodle.dispose();
+            MafuyoMoodle=null;
         }
     }
 
