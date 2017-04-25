@@ -11,7 +11,13 @@ import java.io.*;
 
 public class Mafuyo extends JFrame{
 
-    String imagepath;
+    ImageIcon ii;
+    ImageIcon ii0;
+    ImageIcon ii1;
+    ImageIcon ii2;
+
+    int width;
+    int height;
 
     Maindialog MafuyoNoHanashi;
 
@@ -57,8 +63,13 @@ public class Mafuyo extends JFrame{
     }
 
     public Mafuyo() {
-        imagepath="imgs/mafuyo.png";
-        this.setSize(getWidth(imagepath), getHeight(imagepath));
+        ImageIcon ii0 = new ImageIcon("imgs/mafuyo.png");
+        ImageIcon ii1 = new ImageIcon("imgs/mafuyo1.png");
+        ImageIcon ii2 = new ImageIcon("imgs/mafuyo2.png");
+        ii=ii0;
+        width=getWidth("imgs/mafuyo.png");
+        height=getHeight("imgs/mafuyo.png");
+        this.setSize(width, height);
         this.setLocation(1000,500);
         this.setUndecorated(true);
         this.setBackground(new Color(0, 0, 0, 0));
@@ -71,10 +82,10 @@ public class Mafuyo extends JFrame{
         this.setVisible(true);
         while(true){
             waitms(4000);
-            imagepath="imgs/mafuyo2.png";
+            ii=ii2;
             this.repaint();
             waitms(300);
-            imagepath="imgs/mafuyo.png";
+            ii=ii0;
             this.repaint();
         }
     }
@@ -121,10 +132,7 @@ public class Mafuyo extends JFrame{
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        int width=getWidth(imagepath);
-        int height=getHeight(imagepath);
-        ImageIcon ii1 = new ImageIcon(imagepath);
-        g.drawImage(ii1.getImage(), 0, 0, width, height,null);
+        g.drawImage(ii.getImage(), 0, 0, width, height,null);
     }
 
     class MouseEventListener implements MouseInputListener {
@@ -349,7 +357,7 @@ public class Mafuyo extends JFrame{
         }
         Mafuyo frame=this;
         Point p = this.getLocation();
-        imagepath="imgs/mafuyo1.png";
+        ii=ii1;
         this.repaint();
         if(Mafuyowait==null){
             Mafuyowait=new Simpledialog(p.x+145,p.y-90,"请稍等哦。");
@@ -373,7 +381,7 @@ public class Mafuyo extends JFrame{
                         if(MafuyoMoodle==null){
                             MafuyoMoodle=new Moodledialog(p.x+140,p.y-190, getMoodleNews(), frame);
                             MafuyoMoodle.setAlwaysOnTop(true);
-                            imagepath="imgs/mafuyo.png";
+                            ii=ii0;
                             frame.repaint();
                         }
                     }
@@ -389,7 +397,7 @@ public class Mafuyo extends JFrame{
             MafuyoNoHanashi.dispose();
         }
         Point p = this.getLocation();
-        imagepath="imgs/mafuyo1.png";
+        ii=ii1;
         this.repaint();
         if(Mafuyowait==null){
             Mafuyowait=new Simpledialog(p.x+145,p.y-90,"请稍等哦。");
@@ -451,6 +459,7 @@ public class Mafuyo extends JFrame{
     }
 
     public static void main(String[] args) {
+        Thread.currentThread().setName("Mafuyo");
         new Mafuyo();
     }
 }
