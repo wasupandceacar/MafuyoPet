@@ -25,6 +25,8 @@ public class Mafuyo extends JFrame{
 
     Moodledialog MafuyoMoodle;
 
+    Exedialog MafuyoExe;
+
     Moodle moodle;
 
     Wlan wlan;
@@ -146,7 +148,7 @@ public class Mafuyo extends JFrame{
     class MouseEventListener implements MouseInputListener {
 
         Point origin;
-        //鼠标拖拽想要移动的目标组件
+
         Mafuyo frame;
         PopupMenu Menu;
         MenuItem exit;
@@ -172,67 +174,69 @@ public class Mafuyo extends JFrame{
                 Menu.show(frame,e.getX(),e.getY());
             }
             if(e.getButton()==MouseEvent.BUTTON1){
-                if(MafuyoNoHanashi==null){
-                    Point p = this.frame.getLocation();
-                    MafuyoNoHanashi=new Maindialog(p.x+145,p.y-90,"前辈，怎么了？", frame);
-                    MafuyoNoHanashi.addMouseListener(new MouseListener() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
+                if(MafuyoMoodle==null&&Mafuyowait==null&&MafuyoExe==null){
+                    if(MafuyoNoHanashi==null){
+                        Point p = this.frame.getLocation();
+                        MafuyoNoHanashi=new Maindialog(p.x+145,p.y-90,"前辈，怎么了？", frame);
+                        MafuyoNoHanashi.addMouseListener(new MouseListener() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
 
-                        }
-
-                        @Override
-                        public void mousePressed(MouseEvent e) {
-
-                        }
-
-                        @Override
-                        public void mouseReleased(MouseEvent e) {
-
-                        }
-
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            if(dtimer!=null){
-                                dtimer.stop();
-                                dtimer=null;
                             }
-                        }
 
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            if(dtimer==null){
-                                dtimer=new Timer(6000, new ActionListener() {
-                                    @Override
-                                    public void actionPerformed(ActionEvent e) {
-                                        if(MafuyoNoHanashi!=null){
-                                            MafuyoNoHanashi.dispose();
-                                            MafuyoNoHanashi=null;
+                            @Override
+                            public void mousePressed(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mouseReleased(MouseEvent e) {
+
+                            }
+
+                            @Override
+                            public void mouseEntered(MouseEvent e) {
+                                if(dtimer!=null){
+                                    dtimer.stop();
+                                    dtimer=null;
+                                }
+                            }
+
+                            @Override
+                            public void mouseExited(MouseEvent e) {
+                                if(dtimer==null){
+                                    dtimer=new Timer(6000, new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            if(MafuyoNoHanashi!=null){
+                                                MafuyoNoHanashi.dispose();
+                                                MafuyoNoHanashi=null;
+                                            }
                                         }
-                                    }
-                                });
-                                dtimer.start();
+                                    });
+                                    dtimer.start();
+                                }
                             }
-                        }
-                    });
-                    MafuyoNoHanashi.setAlwaysOnTop(true);
-                }
-                if(dtimer!=null){
-                    dtimer.stop();
-                    dtimer=null;
-                }
-                if(dtimer==null){
-                    dtimer=new Timer(6000, new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if(MafuyoNoHanashi!=null){
-                                MafuyoNoHanashi.dispose();
-                                MafuyoNoHanashi=null;
-                                System.gc();
+                        });
+                        MafuyoNoHanashi.setAlwaysOnTop(true);
+                    }
+                    if(dtimer!=null){
+                        dtimer.stop();
+                        dtimer=null;
+                    }
+                    if(dtimer==null){
+                        dtimer=new Timer(6000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                if(MafuyoNoHanashi!=null){
+                                    MafuyoNoHanashi.dispose();
+                                    MafuyoNoHanashi=null;
+                                    System.gc();
+                                }
                             }
-                        }
-                    });
-                    dtimer.start();
+                        });
+                        dtimer.start();
+                    }
                 }
             }
         }
@@ -367,6 +371,7 @@ public class Mafuyo extends JFrame{
     public void OpenMoodle(){
         if(MafuyoNoHanashi!=null){
             MafuyoNoHanashi.dispose();
+            MafuyoNoHanashi=null;
         }
         Mafuyo frame=this;
         Point p = this.getLocation();
@@ -410,6 +415,7 @@ public class Mafuyo extends JFrame{
     public void AutoLoginToWlan(){
         if(MafuyoNoHanashi!=null){
             MafuyoNoHanashi.dispose();
+            MafuyoNoHanashi=null;
         }
         Point p = this.getLocation();
         ii=ii1;
@@ -463,6 +469,19 @@ public class Mafuyo extends JFrame{
         }
     }
 
+    //列出exe
+    public void ListExe(){
+        if(MafuyoNoHanashi!=null){
+            MafuyoNoHanashi.dispose();
+            MafuyoNoHanashi=null;
+        }
+        if(MafuyoExe==null){
+            Point p = this.getLocation();
+            MafuyoExe=new Exedialog(p.x+140,p.y-190, "能使用的exe有", this);
+            MafuyoExe.setAlwaysOnTop(true);
+        }
+    }
+
     //读取文件
     public String readFile(String path){
         File src=new File(path);
@@ -486,6 +505,74 @@ public class Mafuyo extends JFrame{
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    //打开exe
+    public void OpenExe(String path){
+        try {
+            Runtime.getRuntime().exec(path);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //返回
+    public void Back(){
+        if(MafuyoMoodle!=null){
+            MafuyoMoodle.dispose();
+            MafuyoMoodle=null;
+            System.gc();
+        }
+        if(MafuyoExe!=null){
+            MafuyoExe.dispose();
+            MafuyoExe=null;
+            System.gc();
+        }
+        if(MafuyoNoHanashi==null){
+            Point p = this.getLocation();
+            MafuyoNoHanashi=new Maindialog(p.x+145,p.y-90,"前辈，怎么了？", this);
+            MafuyoNoHanashi.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    if(dtimer!=null){
+                        dtimer.stop();
+                        dtimer=null;
+                    }
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    if(dtimer==null){
+                        dtimer=new Timer(6000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                if(MafuyoNoHanashi!=null){
+                                    MafuyoNoHanashi.dispose();
+                                    MafuyoNoHanashi=null;
+                                }
+                            }
+                        });
+                        dtimer.start();
+                    }
+                }
+            });
+            MafuyoNoHanashi.setAlwaysOnTop(true);
         }
     }
 

@@ -13,3 +13,6 @@ out/production/MafuyoPet/html/moodle.html
 out/production/MafuyoPet/inis/wlanname.ini
 out/production/MafuyoPet/inis/moodle.ini
 out/production/MafuyoPet/inis/wlan.ini
+out/artifacts/MafuyoPet_jar/MafuyoPet.jar
+out/production/MafuyoPet/META-INF/MANIFEST.MF
+src/META-INF/MANIFEST.MF

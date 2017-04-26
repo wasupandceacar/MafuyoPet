@@ -59,9 +59,9 @@ public class Wlan {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(src), "UTF-8");
             BufferedReader bufferedReader = new BufferedReader(isr);
             String content;
-            while((content = bufferedReader.readLine() )!=null){
+            while((content = bufferedReader.readLine())!=null){
                 if(content.startsWith("name=")){
-                    String wlanname=content.substring(5, content.length());
+                    String wlanname=content.substring(5);
                     connectToWlan(wlanname);
                     break;
                 }

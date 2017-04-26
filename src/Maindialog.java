@@ -75,10 +75,24 @@ public class Maindialog extends JDialog{
             }
         });
         this.add(wlan);
+        JButton exe=new JButton("速开exe");
+        exe.setBounds(24,66+15*row,43,20);
+        exe.setBorder(null);
+        exe.setBackground(Color.white);
+        exe.setFocusPainted(false);
+        exe.setFont(this.getFont());
+        exe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.ListExe();
+            }
+        });
+        this.add(exe);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setVisible(true);
         moodle.repaint();
         wlan.repaint();
+        exe.repaint();
     }
 
     @Override
