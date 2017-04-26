@@ -31,6 +31,9 @@ public class Moodle {
             String username=iniItem.getValue();
             iniItem=iniSection.getItem("password");
             String password=iniItem.getValue();
+            ini=null;
+            inir=null;
+            System.gc();
             HtmlPage LoginPage=MoodleClient.getPage(url);
             HtmlElement usernameEle = LoginPage.getElementByName("username");
             HtmlElement passwordEle = (HtmlElement)LoginPage.getElementById("password");
@@ -48,6 +51,8 @@ public class Moodle {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        MoodleClient=null;
+        System.gc();
     }
 
     public static void saveFile(HtmlPage page, String file) throws Exception {
@@ -55,5 +60,8 @@ public class Moodle {
         FileOutputStream output = new FileOutputStream(file);
         IOUtils.copy(is, output);
         output.close();
+        is=null;
+        output=null;
+        System.gc();
     }
 }

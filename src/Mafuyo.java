@@ -25,6 +25,10 @@ public class Mafuyo extends JFrame{
 
     Moodledialog MafuyoMoodle;
 
+    Moodle moodle;
+
+    Wlan wlan;
+
     //不关注对话的计时器
     Timer dtimer;
 
@@ -48,6 +52,8 @@ public class Mafuyo extends JFrame{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        picture=null;
+        System.gc();
         return sourceImg.getWidth();
     }
 
@@ -59,6 +65,8 @@ public class Mafuyo extends JFrame{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        picture=null;
+        System.gc();
         return sourceImg.getHeight();
     }
 
@@ -220,6 +228,7 @@ public class Mafuyo extends JFrame{
                             if(MafuyoNoHanashi!=null){
                                 MafuyoNoHanashi.dispose();
                                 MafuyoNoHanashi=null;
+                                System.gc();
                             }
                         }
                     });
@@ -280,7 +289,7 @@ public class Mafuyo extends JFrame{
     class MoodleThread extends Thread {
         @Override
         public void run() {
-            new Moodle();
+            moodle=new Moodle();
         }
     }
 
@@ -288,7 +297,7 @@ public class Mafuyo extends JFrame{
     class WlanThread extends Thread {
         @Override
         public void run() {
-            new Wlan();
+            wlan=new Wlan();
         }
     }
 
@@ -335,6 +344,9 @@ public class Mafuyo extends JFrame{
         if(tflag){
             topic+="无          ";
         }
+        html=null;
+        shtml=null;
+        System.gc();
         return homework+"           "+topic;
     }
 
@@ -347,6 +359,7 @@ public class Mafuyo extends JFrame{
         if(MafuyoMoodle!=null){
             MafuyoMoodle.dispose();
             MafuyoMoodle=null;
+            System.gc();
         }
     }
 
@@ -374,10 +387,12 @@ public class Mafuyo extends JFrame{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(mt.getState()== Thread.State.TERMINATED){
+                        moodle=null;
                         wtimer.stop();
                         wtimer=null;
                         Mafuyowait.dispose();
                         Mafuyowait=null;
+                        System.gc();
                         if(MafuyoMoodle==null){
                             MafuyoMoodle=new Moodledialog(p.x+140,p.y-190, getMoodleNews(), frame);
                             MafuyoMoodle.setAlwaysOnTop(true);
@@ -414,6 +429,8 @@ public class Mafuyo extends JFrame{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(wt.getState()== Thread.State.TERMINATED){
+                        wlan=null;
+                        System.gc();
                         wtimer.stop();
                         wtimer=null;
                         Mafuyowait.dispose();
@@ -427,6 +444,7 @@ public class Mafuyo extends JFrame{
                                 wtimer=null;
                                 Mafuyowait.dispose();
                                 Mafuyowait = null;
+                                System.gc();
                             }
                         });
                         wtimer.start();
@@ -441,6 +459,7 @@ public class Mafuyo extends JFrame{
         if(MafuyoMoodle!=null){
             MafuyoMoodle.dispose();
             MafuyoMoodle=null;
+            System.gc();
         }
     }
 
@@ -455,6 +474,11 @@ public class Mafuyo extends JFrame{
             while((content = bufferedReader.readLine() )!=null){
                 stringBuilder.append(content);
             }
+            src=null;
+            isr=null;
+            bufferedReader=null;
+            content=null;
+            System.gc();
             return stringBuilder.toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

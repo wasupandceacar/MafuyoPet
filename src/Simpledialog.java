@@ -20,6 +20,8 @@ public class Simpledialog extends JDialog {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        picture=null;
+        System.gc();
         return sourceImg.getWidth();
     }
 
@@ -31,6 +33,8 @@ public class Simpledialog extends JDialog {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        picture=null;
+        System.gc();
         return sourceImg.getHeight();
     }
 
@@ -51,9 +55,10 @@ public class Simpledialog extends JDialog {
         int width=getWidth(imagepath);
         int height=getHeight(imagepath);
         ImageIcon ii1 = new ImageIcon(imagepath);
-        Rectangle r=new Rectangle(24, 38, 145, 128);
         g.drawImage(ii1.getImage(), 0, 0, width, height,null);
         drawLineString(g);
+        ii1=null;
+        System.gc();
     }
 
     //换行显示对话

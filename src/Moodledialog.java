@@ -22,6 +22,8 @@ public class Moodledialog extends JDialog{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        picture=null;
+        System.gc();
         return sourceImg.getWidth();
     }
 
@@ -33,6 +35,8 @@ public class Moodledialog extends JDialog{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        picture=null;
+        System.gc();
         return sourceImg.getHeight();
     }
 
@@ -85,6 +89,8 @@ public class Moodledialog extends JDialog{
         ImageIcon ii1 = new ImageIcon(imagepath);
         g.drawImage(ii1.getImage(), 0, 0, width, height,null);
         drawLineString(g);
+        ii1=null;
+        System.gc();
     }
 
     //换行显示对话

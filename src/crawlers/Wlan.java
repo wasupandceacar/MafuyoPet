@@ -35,6 +35,9 @@ public class Wlan {
             String username=iniItem.getValue();
             iniItem=iniSection.getItem("password");
             String password=iniItem.getValue();
+            ini=null;
+            inir=null;
+            System.gc();
             HttpPost post = new HttpPost("http://p.nju.edu.cn/portal_io/login");
             List<NameValuePair> formParams = new ArrayList<>();
             formParams.add(new BasicNameValuePair("username", username));
@@ -45,6 +48,8 @@ public class Wlan {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        client=null;
+        System.gc();
     }
 
     public void connectToNet(){
@@ -61,23 +66,26 @@ public class Wlan {
                     break;
                 }
             }
+            isr=null;
+            bufferedReader=null;
+            content=null;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        src=null;
+        System.gc();
     }
 
     public void connectToWlan(String Wlanname){
         try {
             String cmdStr = "cmd /c netsh wlan connect name="+Wlanname;
             Runtime.getRuntime().exec(cmdStr);
+            cmdStr=null;
+            System.gc();
         }catch(Exception e){
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        new Wlan();
     }
 }
