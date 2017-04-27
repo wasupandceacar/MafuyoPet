@@ -1,5 +1,3 @@
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import crawlers.Moodle;
 import crawlers.Wlan;
 import org.dtools.ini.*;
@@ -89,6 +87,7 @@ public class Mafuyo extends JFrame{
         ii=ii0;
         width=getWidth("imgs/mafuyo.png");
         height=getHeight("imgs/mafuyo.png");
+        LoadConfig();
         this.setSize(width, height);
         this.setLocation(1000,500);
         this.setUndecorated(true);
@@ -98,7 +97,6 @@ public class Mafuyo extends JFrame{
         this.addMouseMotionListener(mouseListener);
         this.setType(Type.UTILITY);
         tray();
-        LoadConfig();
         this.setAlwaysOnTop(true);
         this.setVisible(true);
         while(true){
@@ -163,17 +161,38 @@ public class Mafuyo extends JFrame{
         Mafuyo frame;
         PopupMenu Menu;
         MenuItem exit;
+        MenuItem koe;
 
         public MouseEventListener(Mafuyo frame) {
             this.frame = frame;
             origin = new Point();
             Menu=new PopupMenu();
             exit=new MenuItem("退出");
+            if(koeflag){
+                koe=new MenuItem("关闭CV");
+            }else{
+                koe=new MenuItem("开启CV");
+            }
             Menu.add(exit);
+            Menu.add(koe);
             exit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     System.exit(0);
+                }
+            });
+            koe.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(koeflag){
+                        koeflag=false;
+                        SetConfig(0, "flag", "off");
+                        koe.setLabel("开启CV");
+                    }else{
+                        koeflag=true;
+                        SetConfig(0, "flag", "on");
+                        koe.setLabel("关闭CV");
+                    }
                 }
             });
             this.frame.add(Menu);
@@ -182,7 +201,7 @@ public class Mafuyo extends JFrame{
         @Override
         public void mouseClicked(MouseEvent e) {
             if(e.getButton()==MouseEvent.BUTTON3){
-                Menu.show(frame,e.getX(),e.getY());
+                Menu.show(e.getComponent(),e.getX(),e.getY());
             }
             if(e.getButton()==MouseEvent.BUTTON1){
                 if(MafuyoMoodle==null&&Mafuyowait==null&&MafuyoExe==null){
@@ -595,15 +614,17 @@ public class Mafuyo extends JFrame{
     //播放声音
     public void PlayKoe(String path){
         if(koeflag){
-            try {
-                FileInputStream koe=new FileInputStream(path);
-                MafuyoNoKoe=new AudioStream(koe);
-                AudioPlayer.player.start(MafuyoNoKoe);
-                koe=null;
-                MafuyoNoKoe=null;
-                System.gc();
-            } catch (Exception e1) {
-                e1.printStackTrace();
+            if(MafuyoNoKoe==null){
+                try {
+                    FileInputStream koe=new FileInputStream(path);
+                    MafuyoNoKoe=new AudioStream(koe);
+                    AudioPlayer.player.start(MafuyoNoKoe);
+                    koe=null;
+                    MafuyoNoKoe=null;
+                    System.gc();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
         }
     }
@@ -620,13 +641,37 @@ public class Mafuyo extends JFrame{
             ini=null;
             inir=null;
             System.gc();
-            if(flag.equals("1")){
+            if(flag.equals("on")){
                 koeflag=true;
-            }else if(flag.equals("0")){
+            }else if(flag.equals("off")){
                 koeflag=false;
             }else{
 
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //修改设置
+    public void SetConfig(int section, String Item, String value){
+        IniFile iniFile=new BasicIniFile();
+        File file=new File("inis/config.ini");
+        IniFileReader rad=new IniFileReader(iniFile, file);
+        IniFileWriter wir=new IniFileWriter(iniFile, file);
+        try {
+            rad.read();
+            IniSection iniSection=iniFile.getSection(section);
+            IniItem iniItem=iniSection.getItem(Item);
+            iniItem.setValue(value);
+            iniSection.addItem(iniItem);
+            iniFile.addSection(iniSection);
+            wir.write();
+            iniFile=null;
+            file=null;
+            rad=null;
+            wir=null;
+            System.gc();
         } catch (IOException e) {
             e.printStackTrace();
         }

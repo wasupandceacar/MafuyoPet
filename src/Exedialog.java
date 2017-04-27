@@ -114,8 +114,8 @@ public class Exedialog extends JDialog {
         int len=path.size();
         for(int i=0;i<len;i++){
             String tmpname=name.get(i);
-            JButton tmpbu=new JButton(tmpname.substring(0, tmpname.lastIndexOf(".")));
-            tmpbu.setBounds(29,46+20*i,100,20);
+            JButton tmpbu=new JButton(tmpname.lastIndexOf(".")==-1?tmpname:tmpname.substring(0, tmpname.lastIndexOf(".")));
+            tmpbu.setBounds(29,46+20*i,123,20);
             tmpbu.setBorder(null);
             tmpbu.setHorizontalAlignment(SwingConstants.LEFT);
             tmpbu.setBackground(Color.white);
