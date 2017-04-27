@@ -39,6 +39,9 @@ public class Mafuyo extends JFrame{
     //是否播放声音flag
     boolean koeflag;
 
+    //是否开机自启的flag
+    boolean autostartflag;
+
     //不关注对话的计时器
     Timer dtimer;
 
@@ -130,6 +133,12 @@ public class Mafuyo extends JFrame{
         }else{
             koe=new MenuItem("开启CV");
         }
+        final MenuItem aust;
+        if(autostartflag){
+            aust=new MenuItem("关闭自启");
+        }else{
+            aust=new MenuItem("开启自启");
+        }
         koe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -144,7 +153,24 @@ public class Mafuyo extends JFrame{
                 }
             }
         });
+        aust.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(autostartflag){
+                    autostartflag=false;
+                    SetConfig(1, "flag", "off");
+                    UnsetAuto();
+                    aust.setLabel("开启自启");
+                }else{
+                    autostartflag=true;
+                    SetConfig(1, "flag", "on");
+                    setAuto();
+                    aust.setLabel("关闭自启");
+                }
+            }
+        });
         pop.add(koe);
+        pop.add(aust);
         TrayIcon trayIcon = new TrayIcon(icon.getImage(),"真冬", pop);
         trayIcon.setImageAutoSize(true);
         trayIcon.addMouseListener(new MouseAdapter()
@@ -182,6 +208,7 @@ public class Mafuyo extends JFrame{
         PopupMenu Menu;
         MenuItem exit;
         MenuItem koe;
+        MenuItem aust;
 
         public MouseEventListener(Mafuyo frame) {
             this.frame = frame;
@@ -193,8 +220,14 @@ public class Mafuyo extends JFrame{
             }else{
                 koe=new MenuItem("开启CV");
             }
+            if(autostartflag){
+                aust=new MenuItem("关闭自启");
+            }else{
+                aust=new MenuItem("开启自启");
+            }
             Menu.add(exit);
             Menu.add(koe);
+            Menu.add(aust);
             exit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -212,6 +245,22 @@ public class Mafuyo extends JFrame{
                         koeflag=true;
                         SetConfig(0, "flag", "on");
                         koe.setLabel("关闭CV");
+                    }
+                }
+            });
+            aust.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(autostartflag){
+                        autostartflag=false;
+                        SetConfig(1, "flag", "off");
+                        UnsetAuto();
+                        aust.setLabel("开启自启");
+                    }else{
+                        autostartflag=true;
+                        SetConfig(1, "flag", "on");
+                        setAuto();
+                        aust.setLabel("关闭自启");
                     }
                 }
             });
@@ -666,14 +715,24 @@ public class Mafuyo extends JFrame{
             inir.read();
             IniSection iniSection=ini.getSection(0);
             IniItem iniItem=iniSection.getItem("flag");
-            String flag=iniItem.getValue();
+            String kflag=iniItem.getValue();
+            iniSection=ini.getSection(1);
+            iniItem=iniSection.getItem("flag");
+            String aflag=iniItem.getValue();
             ini=null;
             inir=null;
             System.gc();
-            if(flag.equals("on")){
+            if(kflag.equals("on")){
                 koeflag=true;
-            }else if(flag.equals("off")){
+            }else if(kflag.equals("off")){
                 koeflag=false;
+            }else{
+
+            }
+            if(aflag.equals("on")){
+                autostartflag=true;
+            }else if(aflag.equals("off")){
+                autostartflag=false;
             }else{
 
             }
@@ -702,6 +761,24 @@ public class Mafuyo extends JFrame{
             wir=null;
             System.gc();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //写入开机自启
+    public void setAuto(){
+        try {
+            Runtime.getRuntime().exec("bat/Mafuyo.bat");
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //删除开机自启
+    public void UnsetAuto(){
+        try {
+            Runtime.getRuntime().exec("bat/UnMafuyo.bat");
+        }catch(Exception e){
             e.printStackTrace();
         }
     }
