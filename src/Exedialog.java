@@ -114,7 +114,7 @@ public class Exedialog extends JDialog {
         int len=path.size();
         for(int i=0;i<len;i++){
             String tmpname=name.get(i);
-            JButton tmpbu=new JButton(tmpname.substring(0, tmpname.length()-4));
+            JButton tmpbu=new JButton(tmpname.substring(0, tmpname.lastIndexOf(".")));
             tmpbu.setBounds(29,46+20*i,100,20);
             tmpbu.setBorder(null);
             tmpbu.setHorizontalAlignment(SwingConstants.LEFT);
@@ -125,6 +125,7 @@ public class Exedialog extends JDialog {
             tmpbu.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    frame.PlayKoe("cv/hai.wav");
                     frame.OpenExe(path.get(finalI)+"/"+tmpname);
                 }
             });
@@ -141,6 +142,7 @@ public class Exedialog extends JDialog {
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/shikataarimasenne.wav");
                 frame.Back();
             }
         });

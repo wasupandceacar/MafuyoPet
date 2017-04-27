@@ -1,5 +1,7 @@
 import crawlers.Moodle;
 import crawlers.Wlan;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,6 +17,8 @@ public class Mafuyo extends JFrame{
     ImageIcon ii0;
     ImageIcon ii1;
     ImageIcon ii2;
+
+    AudioStream MafuyoNoKoe;
 
     int width;
     int height;
@@ -176,6 +180,7 @@ public class Mafuyo extends JFrame{
             if(e.getButton()==MouseEvent.BUTTON1){
                 if(MafuyoMoodle==null&&Mafuyowait==null&&MafuyoExe==null){
                     if(MafuyoNoHanashi==null){
+                        PlayKoe("cv/senbai.wav");
                         Point p = this.frame.getLocation();
                         MafuyoNoHanashi=new Maindialog(p.x+145,p.y-90,"前辈，怎么了？", frame);
                         MafuyoNoHanashi.addMouseListener(new MouseListener() {
@@ -219,6 +224,8 @@ public class Mafuyo extends JFrame{
                             }
                         });
                         MafuyoNoHanashi.setAlwaysOnTop(true);
+                    }else{
+                        PlayKoe("cv/ichiban.wav");
                     }
                     if(dtimer!=null){
                         dtimer.stop();
@@ -399,6 +406,7 @@ public class Mafuyo extends JFrame{
                         Mafuyowait=null;
                         System.gc();
                         if(MafuyoMoodle==null){
+                            frame.PlayKoe("cv/yokatadesune.wav");
                             MafuyoMoodle=new Moodledialog(p.x+140,p.y-190, getMoodleNews(), frame);
                             MafuyoMoodle.setAlwaysOnTop(true);
                             ii=ii0;
@@ -441,6 +449,7 @@ public class Mafuyo extends JFrame{
                         wtimer=null;
                         Mafuyowait.dispose();
                         Mafuyowait=null;
+                        PlayKoe("cv/yokatadesune.wav");
                         Mafuyowait=new Simpledialog(p.x+145,p.y-90,"已经连接到校园网。  请尽情地使用吧。");
                         Mafuyowait.setAlwaysOnTop(true);
                         wtimer=new Timer(4000, new ActionListener() {
@@ -573,6 +582,20 @@ public class Mafuyo extends JFrame{
                 }
             });
             MafuyoNoHanashi.setAlwaysOnTop(true);
+        }
+    }
+
+    //播放声音
+    public void PlayKoe(String path){
+        try {
+            FileInputStream koe=new FileInputStream(path);
+            MafuyoNoKoe=new AudioStream(koe);
+            AudioPlayer.player.start(MafuyoNoKoe);
+            koe=null;
+            MafuyoNoKoe=null;
+            System.gc();
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
     }
 

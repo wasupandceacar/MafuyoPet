@@ -58,6 +58,7 @@ public class Maindialog extends JDialog{
         moodle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/hai.wav");
                 frame.OpenMoodle();
             }
         });
@@ -71,12 +72,13 @@ public class Maindialog extends JDialog{
         wlan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/hai.wav");
                 frame.AutoLoginToWlan();
             }
         });
         this.add(wlan);
-        JButton exe=new JButton("速开exe");
-        exe.setBounds(24,66+15*row,43,20);
+        JButton exe=new JButton("速开程序");
+        exe.setBounds(24,66+15*row,48,20);
         exe.setBorder(null);
         exe.setBackground(Color.white);
         exe.setFocusPainted(false);
@@ -84,6 +86,7 @@ public class Maindialog extends JDialog{
         exe.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/hai.wav");
                 frame.ListExe();
             }
         });

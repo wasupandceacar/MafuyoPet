@@ -58,6 +58,7 @@ public class Moodledialog extends JDialog{
         moodle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/shikataarimasenne.wav");
                 frame.OpenBrowser("html/moodle.html");
             }
         });
@@ -71,6 +72,7 @@ public class Moodledialog extends JDialog{
         close.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/hai.wav");
                 frame.CloseMoodle();
             }
         });
@@ -84,6 +86,7 @@ public class Moodledialog extends JDialog{
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/hai.wav");
                 frame.Back();
             }
         });
