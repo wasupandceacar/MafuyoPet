@@ -115,7 +115,7 @@ public class Mafuyo extends JFrame{
         SystemTray tray = SystemTray.getSystemTray();
         ImageIcon icon = new ImageIcon("imgs/icon.png");
 
-        PopupMenu pop = new PopupMenu(); // 构造一个右键弹出式菜单
+        PopupMenu pop = new PopupMenu();
         final MenuItem exit = new MenuItem("退出");
         exit.addActionListener(new ActionListener() {
             @Override
@@ -124,17 +124,37 @@ public class Mafuyo extends JFrame{
             }
         });
         pop.add(exit);
-        TrayIcon trayIcon = new TrayIcon(icon.getImage(),"真冬", pop);//实例化托盘图标
+        final MenuItem koe;
+        if(koeflag){
+            koe=new MenuItem("关闭CV");
+        }else{
+            koe=new MenuItem("开启CV");
+        }
+        koe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(koeflag){
+                    koeflag=false;
+                    SetConfig(0, "flag", "off");
+                    koe.setLabel("开启CV");
+                }else{
+                    koeflag=true;
+                    SetConfig(0, "flag", "on");
+                    koe.setLabel("关闭CV");
+                }
+            }
+        });
+        pop.add(koe);
+        TrayIcon trayIcon = new TrayIcon(icon.getImage(),"真冬", pop);
         trayIcon.setImageAutoSize(true);
-        //为托盘图标监听点击事件
         trayIcon.addMouseListener(new MouseAdapter()
         {
             public void mouseClicked(MouseEvent e)
             {
-                if(e.getClickCount()== 1)//鼠标双击图标
+                if(e.getClickCount()== 1)
                 {
-                    frame.setExtendedState(JFrame.NORMAL);//设置状态为正常
-                    frame.setVisible(true);//显示主窗体
+                    frame.setExtendedState(JFrame.NORMAL);
+                    frame.setVisible(true);
                 }
             }
         });
@@ -608,6 +628,15 @@ public class Mafuyo extends JFrame{
                 }
             });
             MafuyoNoHanashi.setAlwaysOnTop(true);
+        }
+    }
+
+    //没事
+    public void Nandemo(){
+        if(MafuyoNoHanashi!=null){
+            MafuyoNoHanashi.dispose();
+            MafuyoNoHanashi=null;
+            System.gc();
         }
     }
 

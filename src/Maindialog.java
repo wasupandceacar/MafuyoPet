@@ -91,11 +91,26 @@ public class Maindialog extends JDialog{
             }
         });
         this.add(exe);
+        JButton close=new JButton("没事");
+        close.setBounds(128,66+15*row,34,20);
+        close.setBorder(null);
+        close.setBackground(Color.white);
+        close.setFocusPainted(false);
+        close.setFont(this.getFont());
+        close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.PlayKoe("cv/shikataarimasenne.wav");
+                frame.Nandemo();
+            }
+        });
+        this.add(close);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setVisible(true);
         moodle.repaint();
         wlan.repaint();
         exe.repaint();
+        close.repaint();
     }
 
     @Override
