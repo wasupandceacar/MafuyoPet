@@ -1,5 +1,8 @@
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import crawlers.Moodle;
 import crawlers.Wlan;
+import org.dtools.ini.*;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -34,6 +37,9 @@ public class Mafuyo extends JFrame{
     Moodle moodle;
 
     Wlan wlan;
+
+    //是否播放声音flag
+    boolean koeflag;
 
     //不关注对话的计时器
     Timer dtimer;
@@ -92,6 +98,7 @@ public class Mafuyo extends JFrame{
         this.addMouseMotionListener(mouseListener);
         this.setType(Type.UTILITY);
         tray();
+        LoadConfig();
         this.setAlwaysOnTop(true);
         this.setVisible(true);
         while(true){
@@ -587,15 +594,41 @@ public class Mafuyo extends JFrame{
 
     //播放声音
     public void PlayKoe(String path){
+        if(koeflag){
+            try {
+                FileInputStream koe=new FileInputStream(path);
+                MafuyoNoKoe=new AudioStream(koe);
+                AudioPlayer.player.start(MafuyoNoKoe);
+                koe=null;
+                MafuyoNoKoe=null;
+                System.gc();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    //载入设置
+    public void LoadConfig(){
+        IniFile ini=new BasicIniFile();
+        IniFileReader inir=new IniFileReader(ini, new File("inis/config.ini"));
         try {
-            FileInputStream koe=new FileInputStream(path);
-            MafuyoNoKoe=new AudioStream(koe);
-            AudioPlayer.player.start(MafuyoNoKoe);
-            koe=null;
-            MafuyoNoKoe=null;
+            inir.read();
+            IniSection iniSection=ini.getSection(0);
+            IniItem iniItem=iniSection.getItem("flag");
+            String flag=iniItem.getValue();
+            ini=null;
+            inir=null;
             System.gc();
-        } catch (Exception e1) {
-            e1.printStackTrace();
+            if(flag.equals("1")){
+                koeflag=true;
+            }else if(flag.equals("0")){
+                koeflag=false;
+            }else{
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
