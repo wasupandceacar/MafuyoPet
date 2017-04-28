@@ -1,5 +1,3 @@
-import crawlers.Moodle;
-import crawlers.Wlan;
 import org.dtools.ini.*;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
@@ -11,6 +9,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Mafuyo extends JFrame{
 
@@ -42,11 +43,17 @@ public class Mafuyo extends JFrame{
     //是否开机自启的flag
     boolean autostartflag;
 
+    //错误flag
+    boolean errorflag=false;
+
     //不关注对话的计时器
     Timer dtimer;
 
     //等待的计时器
     Timer wtimer;
+
+    //错误计时器
+    Timer etimer;
 
     //等待事件
     public void waitms(int ms){
@@ -393,17 +400,25 @@ public class Mafuyo extends JFrame{
 
     //抓取moodle的线程
     class MoodleThread extends Thread {
+        Mafuyo frame;
+        public MoodleThread(Mafuyo frame){
+            this.frame=frame;
+        }
         @Override
         public void run() {
-            moodle=new Moodle();
+            moodle=new Moodle(frame);
         }
     }
 
     //连接网络线程
     class WlanThread extends Thread {
+        Mafuyo frame;
+        public WlanThread(Mafuyo frame){
+            this.frame=frame;
+        }
         @Override
         public void run() {
-            wlan=new Wlan();
+            wlan=new Wlan(frame);
         }
     }
 
@@ -487,26 +502,33 @@ public class Mafuyo extends JFrame{
             wtimer.stop();
             wtimer=null;
         }
-        MoodleThread mt=new MoodleThread();
+        MoodleThread mt=new MoodleThread(this);
         mt.start();
         if(wtimer==null){
             wtimer=new Timer(500, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(mt.getState()== Thread.State.TERMINATED){
-                        moodle=null;
+                    if(!errorflag){
+                        if(mt.getState()== Thread.State.TERMINATED){
+                            moodle=null;
+                            wtimer.stop();
+                            wtimer=null;
+                            Mafuyowait.dispose();
+                            Mafuyowait=null;
+                            System.gc();
+                            if(MafuyoMoodle==null){
+                                frame.PlayKoe("cv/yokatadesune.wav");
+                                MafuyoMoodle=new Moodledialog(p.x+140,p.y-190, getMoodleNews(), frame);
+                                MafuyoMoodle.setAlwaysOnTop(true);
+                                ii=ii0;
+                                frame.repaint();
+                            }
+                        }
+                    }else{
+                        errorflag=false;
                         wtimer.stop();
                         wtimer=null;
-                        Mafuyowait.dispose();
-                        Mafuyowait=null;
                         System.gc();
-                        if(MafuyoMoodle==null){
-                            frame.PlayKoe("cv/yokatadesune.wav");
-                            MafuyoMoodle=new Moodledialog(p.x+140,p.y-190, getMoodleNews(), frame);
-                            MafuyoMoodle.setAlwaysOnTop(true);
-                            ii=ii0;
-                            frame.repaint();
-                        }
                     }
                 }
             });
@@ -531,33 +553,40 @@ public class Mafuyo extends JFrame{
             wtimer.stop();
             wtimer=null;
         }
-        WlanThread wt=new WlanThread();
+        WlanThread wt=new WlanThread(this);
         wt.start();
         if(wtimer==null){
             wtimer=new Timer(500, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(wt.getState()== Thread.State.TERMINATED){
-                        wlan=null;
-                        System.gc();
+                    if(!errorflag){
+                        if(wt.getState()== Thread.State.TERMINATED){
+                            wlan=null;
+                            System.gc();
+                            wtimer.stop();
+                            wtimer=null;
+                            Mafuyowait.dispose();
+                            Mafuyowait=null;
+                            PlayKoe("cv/yokatadesune.wav");
+                            Mafuyowait=new Simpledialog(p.x+145,p.y-90,"已经连接到校园网。  请尽情地使用吧。");
+                            Mafuyowait.setAlwaysOnTop(true);
+                            wtimer=new Timer(4000, new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    wtimer.stop();
+                                    wtimer=null;
+                                    Mafuyowait.dispose();
+                                    Mafuyowait = null;
+                                    System.gc();
+                                }
+                            });
+                            wtimer.start();
+                        }
+                    }else{
+                        errorflag=false;
                         wtimer.stop();
                         wtimer=null;
-                        Mafuyowait.dispose();
-                        Mafuyowait=null;
-                        PlayKoe("cv/yokatadesune.wav");
-                        Mafuyowait=new Simpledialog(p.x+145,p.y-90,"已经连接到校园网。  请尽情地使用吧。");
-                        Mafuyowait.setAlwaysOnTop(true);
-                        wtimer=new Timer(4000, new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                wtimer.stop();
-                                wtimer=null;
-                                Mafuyowait.dispose();
-                                Mafuyowait = null;
-                                System.gc();
-                            }
-                        });
-                        wtimer.start();
+                        System.gc();
                     }
                 }
             });
@@ -783,8 +812,67 @@ public class Mafuyo extends JFrame{
         }
     }
 
+    //建立错误日志
+    public void HandleException(Exception ex){
+        errorflag=true;
+        if(Mafuyowait!=null){
+            Mafuyowait.dispose();
+            Mafuyowait=null;
+        }
+        if(etimer!=null){
+            etimer.stop();
+            etimer=null;
+        }
+        PlayKoe("cv/nandemonai.wav");
+        Point p = this.getLocation();
+        Mafuyowait=new Simpledialog(p.x+145,p.y-90,"发生了一些错误。   重试一下？      也可以到log文件夹查看错误日志哦。");
+        Mafuyowait.setAlwaysOnTop(true);
+        if(etimer==null){
+            etimer=new Timer(5000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    etimer.stop();
+                    etimer=null;
+                    Mafuyowait.dispose();
+                    Mafuyowait=null;
+                    System.gc();
+                }
+            });
+            etimer.start();
+        }
+        BufferedWriter out = null;
+        try {
+            Date date=new Date();
+            DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String time=format.format(date);
+            out = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("log/error.log", true)));
+            out.write(time+"\r\n"+getExceptionAllinformation(ex)+"\r\n");
+            date=null;
+            format=null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+                out=null;
+                System.gc();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static String getExceptionAllinformation(Exception e){
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, true);
+        e.printStackTrace(pw);
+        pw.flush();
+        sw.flush();
+        return sw.toString();
+    }
+
     public static void main(String[] args) {
-        Thread.currentThread().setName("Mafuyo");
         new Mafuyo();
     }
 }

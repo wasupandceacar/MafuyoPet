@@ -1,5 +1,3 @@
-package crawlers;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -13,17 +11,17 @@ import java.util.*;
 
 public class Wlan {
 
-    public Wlan(){
-        connectToNet();
+    public Wlan(Mafuyo frame){
+        connectToNet(frame);
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            frame.HandleException(e);
         }
-        LoginTo();
+        LoginTo(frame);
     }
 
-    public void LoginTo(){
+    public void LoginTo(Mafuyo frame){
         HttpClient client = new DefaultHttpClient();
         //读取账户和密码
         IniFile ini=new BasicIniFile();
@@ -46,13 +44,13 @@ public class Wlan {
             post.setEntity(entity);
             client.execute(post);
         } catch (IOException e) {
-            e.printStackTrace();
+            frame.HandleException(e);
         }
         client=null;
         System.gc();
     }
 
-    public void connectToNet(){
+    public void connectToNet(Mafuyo frame){
         //读取wlan名
         File src=new File("inis/wlan.ini");
         try {
@@ -62,7 +60,7 @@ public class Wlan {
             while((content = bufferedReader.readLine())!=null){
                 if(content.startsWith("name=")){
                     String wlanname=content.substring(5);
-                    connectToWlan(wlanname);
+                    connectToWlan(frame, wlanname);
                     break;
                 }
             }
@@ -70,22 +68,22 @@ public class Wlan {
             bufferedReader=null;
             content=null;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            frame.HandleException(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            frame.HandleException(e);
         }
         src=null;
         System.gc();
     }
 
-    public void connectToWlan(String Wlanname){
+    public void connectToWlan(Mafuyo frame, String Wlanname){
         try {
             String cmdStr = "cmd /c netsh wlan connect name="+Wlanname;
             Runtime.getRuntime().exec(cmdStr);
             cmdStr=null;
             System.gc();
         }catch(Exception e){
-            e.printStackTrace();
+            frame.HandleException(e);
         }
     }
 }

@@ -1,5 +1,3 @@
-package crawlers;
-
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -15,7 +13,7 @@ import java.util.logging.Logger;
 
 public class Moodle {
 
-    public Moodle(){
+    public Moodle(Mafuyo frame){
         String url="http://218.94.159.99/login/index.php";
         WebClient MoodleClient=new WebClient();
         MoodleClient.getOptions().setCssEnabled(true);
@@ -46,10 +44,10 @@ public class Moodle {
             try {
                 saveFile(MoodlePage,"html/moodle.html");
             } catch (Exception e) {
-                e.printStackTrace();
+                frame.HandleException(e);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            frame.HandleException(e);
         }
         MoodleClient=null;
         System.gc();
