@@ -391,6 +391,11 @@ public class Mafuyo extends JFrame{
                         p.x + (e.getX() - origin.x) + 140,
                         p.y + (e.getY() - origin.y) -190);
             }
+            if(MafuyoExe!=null){
+                MafuyoExe.setLocation(
+                        p.x + (e.getX() - origin.x) + 140,
+                        p.y + (e.getY() - origin.y) -190);
+            }
         }
 
         @Override
